@@ -1,0 +1,45 @@
+==========================================
+EVENT HANDLING IN SDL
+==========================================
+QUICK VERSION
+
+There are two ways to handle events.
+
+This version updates the objects when the user generates an event.
+-	while (EventInEventQueue)
+		discern event
+		handle event
+		update objects (incl frame)
+
+
+This version involves what is called an event queue
+-	while (active)
+		while (EventInEventQueue)
+			handle all events
+		update objects
+
+
+
+
+
+
+=========================================
+FIRST THINGS FIRST
+Let's make it possible to quit our programs. SDL_QUIT will be of help.
+Look, I'm not writing the code. The general pattern is...
+
+-	while (there's an event in the event queue)
+		if (event is quit)
+			become inactive or exit program successfully
+
+
+-	while (active)
+		while (there's an event in the event queue)
+			if (Event is quit)
+				Become Inactive or Exit Program Successfully
+
+
+SDL_Event is a struct which models...a generic event.
+If our event is named "eve" for example, we can check its type like so.
+	eve.type
+So, check if (eve.type == SDL_QUIT)

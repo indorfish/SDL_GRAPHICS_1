@@ -1,0 +1,5 @@
+	
+g++ source.cpp -o outname -lSDL2
+
+Specify file to include with -I, and library path with -L
+	g++ source.cpp -o outname -I/usr/include/SDL2 -L/usr/lib -lSDL2

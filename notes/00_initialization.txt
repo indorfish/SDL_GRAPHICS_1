@@ -1,0 +1,46 @@
+
+
+HOW TO INITIALIZE A BASIC SDL PROGRAM
+=================================================
+
+You need the SDL_Init( ... ) and SDL_Quit() functions, both found in the SDL.h library.
+A prototypical SDL program with proper initialization and shutdown should look like this:
+
+C CODE:
+
+	#include <SDL2/SDL.h>
+	#define INIT_FLAG SDL_INIT_EVERYTHING
+
+	int main(void)
+	{
+		SDL_Init( INIT_FLAG );
+		/* do stuff */
+		SDL_Quit();
+
+		return (0);
+	}
+
+For some reason, compiling SDL programs is not that straightforward. You gotta perform some linker wizardry for things to work out.
+
+The flags are...
+	SDL_INIT_TIMER
+	SDL_INIT_VIDEO
+	SDL_INIT_AUDIO
+	SDL_INIT_JOYSTICK
+	SDL_INIT_HAPTIC
+	SDL_INIT_EVENTS
+	SDL_INIT_GAMECONTROLLER
+	SDL_INIT_EVERYTHING
+	SDL_INIT_NOPARACHUTE
+These are Uint32 types, which just means typedef unsigned int Uint32.
+They can be OR'ed together.
+
+Will write more on these later, when I'm ready to be an expert. For now, just use INIT_EVERYTHING.
+
+More functions for initialization and shutdown:
+
+	SDL_InitSubSystem(...)
+	SDL_QuitSubSystem(...)
+	SDL_WasInit(...)
+
+

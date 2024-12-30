@@ -1,0 +1,128 @@
+
+CREATING WINDOWS IN SDL2
+====================================
+SDL video handling seems quite daunting, but we'll get there in hopefully a few months.
+
+The star of the show is the SDL_CreateWindow(*) function, which returns a pointer to an object of type SDL_Window.
+
+	SDL_Window type
+		This is opaque. Implementation is hidden from us.
+
+	SDL_CreateWindow(*)
+		SDL_Window *SDL_CreateWindow(const char *title,
+					     int x, int y, int w, int h,
+					     Uint32 flags);
+
+	SDL_DestroyWindow(*)
+		void SDL_DestroyWindow( SDL_Window *window );
+
+
+More useful functions (or types) for novices to worry about:
+
+	SDL_GetWindowPosition(*)
+	SDL_GetWindowSize(*)
+	SDL_GetWindowTitle(*)
+	SDL_HideWindow(*)
+	SDL_MaximizeWindow(*)
+	SDL_MinimizeWindow(*)
+	SDL_RestoreWindow(*)
+	SDL_SetWindowData(*)
+	SDL_SetWindowFullscreen(*)
+	SDL_SetWindowPosition(*)
+	SDL_SetWindowSize(*)
+	SDL_SetWindowResizable(*)
+	SDL_SetWindowTitle(*)
+	
+
+
+Those allow us to create windows from scratch. If we want to create a window from an existing window...
+
+	SDL_CreateWindowFrom(*)
+		SDL_Window *SDL_CreateWindowFrom(const void *data);
+		Try casting your native window as a void* type before passing it as parameter.
+	Don't use this without reading the documentation.
+
+
+
+
+
+To make things easier, we have the following macros for x, y.
+
+	SDL_WINDOWPOS_CENTERED
+	SDL_WINDOWPOS_UNDEFINED - the OS handles the position by itself.
+
+The width and height (w, h) are in "screen co-ordinates". I'll just assume it's in pixels.
+
+
+SDL_WindowFlags
+These are all stored in an enum. They are...
+	SDL_WINDOW_FULLSCREEN
+	SDL_WINDOW_OPENGL
+	SDL_WINDOW_SHOWN
+	SDL_WINDOW_HIDDEN
+	SDL_WINDOW_BORDERLESS
+	SDL_WINDOW_RESIZABLE
+	SDL_WINDOW_MINIMIZED
+	SDL_WINDOW_MAXIMIZED
+	SDL_WINDOW_MOUSE_GRABBED
+	SDL_WINDOW_INPUT_FOCUS
+	SDL_WINDOW_MOUSE_FOCUS
+	SDL_WINDOW_FULLSCREEN_DESKTOP
+	SDL_WINDOW_FOREIGN
+	SDL_WINDOW_ALLOW_HIGHDPI
+	SDL_WINDOW_MOUSE_CAPTURE
+	SDL_WINDOW_ALWAYS_ON_TOP
+	SDL_WINDOW_SKIP_TASKBAR
+	SDL_WINDOW_UTILITY
+	SDL_WINDOW_TOOLTIP
+	SDL_WINDOW_POPUP_MENU
+	SDL_WINDOW_KEYBOARD_GRABBED
+	SDL_WINDOW_VULKAN
+	SDL_WINDOW_METAL
+	SDL_WINDOW_INPUT_GRABBED
+
+Sheesh, that's a lot. Try experimenting with them.
+
+
+===================================================================
+SIMPLE PROGRAM TO DRAW A WINDOW
+-------------------------------------
+
+	#include <SDL2/SDL.h>
+	#define DELAY_TIME	5000
+	#define INIT_FLAG	SDL_INIT_VIDEO
+
+	int main(void)
+	{
+		SDL_Init( INIT_FLAG );
+
+		SDL_Window winnie;
+		winnie = SDL_CreateWindow( "My First Window",
+					   SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+					   600, 300,
+					   SDL_WINDOW_RESIZABLE );
+		if (winnie == NULL)
+			return (1); /* not sure if this is licit */
+		SDL_Delay( DELAY_TIME );
+
+		SDL_DestroyWindow( winnie );
+		SDL_Quit();
+
+		return (0);
+	}
+
+
+
+===================================================================
+PRECAUTIONS
+-------------------------------------
+1. The function may return NULL on failure, so make sure to check.
+In general, never assume that a function successfully achieves its task - especially if dynamic memory allocation, or pointer shenanigans are involved (e.g. returning a pointer).
+So, check. 
+
+2. What was created must be destroyed. Make sure to call SDL_DestroyWindow on every window that was created.
+Perhaps, it's useful to write custom functions or structs or classes to do this automatically.
+
+3. By the way...if you write a program to create and destroy a window, it will likely just flash on the screen very briefly. You need to wait a bit longer.
+The SDL_Delay( time_in_ms ) function will prove useful.
+
