@@ -1,5 +1,6 @@
 /*
  * GRADUALLY VARY THE COLOR OF THE SCREEN, ALLOW USER TO QUIT
+ * MORE EFFICIENT VERSION
  */
 
 #include <SDL2/SDL.h>
@@ -12,7 +13,7 @@
 
 int main(void)
 {
-	int red, grn, blu;
+	int red, grn, blu, i;
 	int active = TRUE;
 
 	SDL_Init( SDL_INIT_VIDEO );
@@ -34,29 +35,27 @@ int main(void)
 
 	while (active)
 	{
-		while (SDL_PollEvent( &eve ))
+		/* Generally, treat r,g,b as functions of i */
+		for (i = 0; i < (3 * COLOR_DEPTH); ++i)
 		{
-			if (eve.type == SDL_QUIT)
+			/* what if I put the event loop inside the color iteration? */
+			while (SDL_PollEvent( &eve ))
 			{
-				active = FALSE;
-				break;
-			}
-		}
-		for (red = 0; red < COLOR_DEPTH; ++red)
-		{
-			for (grn = 0; grn < COLOR_DEPTH; ++grn)
-			{
-				for (blu = 0; blu < COLOR_DEPTH; ++blu)
+				if (eve.type == SDL_QUIT)
 				{
-					SDL_FillRect( surfie,
-						      NULL,
-						      SDL_MapRGB( surfie->format,
-							          red, grn, blu ));
-					SDL_UpdateWindowSurface( winnie );
-					/* for debugging */
-					printf("r:%d g:%d b:%d\n", red, grn, blu);
+					active = FALSE;
+					break;
 				}
 			}
+			red = i % COLOR_DEPTH;
+			grn = (4*i + 1) % COLOR_DEPTH;
+			blu = (i*i + 3*i) % COLOR_DEPTH;
+			SDL_FillRect( surfie,
+				      NULL,
+				      SDL_MapRGB( surfie->format,
+					          red, grn, blu));
+			SDL_UpdateWindowSurface( winnie );
+			/* printf("r:%d g:%d b:%d\n", red, grn, blu); */
 		}
 	}
 
